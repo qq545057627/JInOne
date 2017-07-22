@@ -1,4 +1,4 @@
-package com.w.jinone;
+package com.w.demo;
 
 import org.junit.Test;
 

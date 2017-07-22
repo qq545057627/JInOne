@@ -141,21 +141,37 @@ public class VuManager {
                     alpha(false, containerViewContainer);
                 }
                 if (vu.getAnimSwitchTypeOut() == AnimSwitchEnum.BottomToUp ) {        //从下到上消失
+                    if (vuStack.size() >= 1) {
+                        Vu lastVu = vuStack.get(vuStack.size() - 1);
+                        lastVu.getView().animate().setDuration(AnimTime).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
+                    } else {
+                        if(mainBody!=null){
+                            mainBody.animate().setDuration(AnimTime - 100).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
+                        }
+                    }
                     if (vu.getView() != null) {
                         vu.getView().animate().setDuration(AnimTime).translationY(sHeight).
                                 setInterpolator(new LinearOutSlowInInterpolator()).
                                 setListener(listener);
                     }
                 } else if (vu.getAnimSwitchTypeOut() == AnimSwitchEnum.TopToDown) {  //从上到下
+                    if (vuStack.size() >= 1) {
+                        Vu lastVu = vuStack.get(vuStack.size() - 1);
+                        lastVu.getView().animate().setDuration(AnimTime).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
+                    } else {
+                        if(mainBody!=null){
+                            mainBody.animate().setDuration(AnimTime - 100).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
+                        }
+                    }
                     vu.getView().animate().setDuration(AnimTime).setInterpolator(new LinearOutSlowInInterpolator())
-                            .translationY(0).setListener(listener);
+                            .translationY(-sHeight).setListener(listener);
                 } else if (vu.getAnimSwitchTypeOut() == AnimSwitchEnum.RightToLift) { //右到左
                     if (vuStack.size() >= 1) {
                         Vu lastVu = vuStack.get(vuStack.size() - 1);
-                        lastVu.getView().animate().setDuration(AnimTime).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
+                        lastVu.getView().animate().setDuration(AnimTime).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
                     } else {
                         if(mainBody!=null){
-                            mainBody.animate().setDuration(AnimTime - 100).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
+                            mainBody.animate().setDuration(AnimTime - 100).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
                         }
                     }
                     vu.getView().animate().setDuration(AnimTime).translationX(sWidth).
@@ -174,9 +190,26 @@ public class VuManager {
                             setInterpolator(new LinearOutSlowInInterpolator()).
                             setListener(listener);
                 }else if (vu.getAnimSwitchTypeOut() == AnimSwitchEnum.None) {
+                    if (vuStack.size() >= 1) {
+                        Vu lastVu = vuStack.get(vuStack.size() - 1);
+                        lastVu.getView().animate().setDuration(AnimTime).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
+                    } else {
+                        if(mainBody!=null){
+                            mainBody.animate().setDuration(AnimTime - 100).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
+                        }
+                    }
                     vu.getView().animate().setDuration(0).alpha(0).
                             setInterpolator(new LinearOutSlowInInterpolator()).
                             setListener(listener);
+                }else if (vu.getAnimSwitchTypeIn() == AnimSwitchEnum.Custom) {     //自定义动画
+                    View lastView=null;
+                    if (vuStack.size() >= 1) {
+                        Vu lastVu = vuStack.get(vuStack.size() - 1);
+                        lastView=lastVu.getView();
+                    } else {
+                        lastView=mainBody;
+                    }
+                    vu.customAnim(vu.getView(),lastView);
                 }
             }
         }
@@ -284,12 +317,13 @@ public class VuManager {
                     if (vu.isNeedMask()) {
                         alpha(true, containerViewContainer);
                     }
-                    view.setY(sHeight);                                             //初始化view y坐标位置
+                    view.setY(-sHeight);                                             //初始化view y坐标位置
                     view.animate().setDuration(AnimTime).translationY(0).setInterpolator(new LinearOutSlowInInterpolator()).setListener(vu.isNeedMask()==true? null:listener);
                 }  else if (vu.getAnimSwitchTypeIn() == AnimSwitchEnum.BottomToUp) {
                     if (vu.isNeedMask()) {
                         alpha(true, containerViewContainer);
                     }
+                    view.setY(sHeight);
                     view.animate().setDuration(AnimTime).setInterpolator(new AccelerateDecelerateInterpolator())
                             .translationY(vu.getView().getMeasuredHeight()).setListener(vu.isNeedMask()==true? null:listener);
                 }else if (vu.getAnimSwitchTypeIn() == AnimSwitchEnum.Custom) {     //自定义动画
