@@ -180,9 +180,11 @@ public class VuManager {
                 }  else if (vu.getAnimSwitchTypeOut() == AnimSwitchEnum.LeftToRight) {  //左到右
                     if (vuStack.size() >= 1) {
                         Vu lastVu = vuStack.get(vuStack.size() - 1);
+                        lastVu.getView().setX(sWidth);
                         lastVu.getView().animate().setDuration(AnimTime).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
                     } else {
                         if(mainBody!=null){
+                            mainBody.setX(sWidth);
                             mainBody.animate().setDuration(AnimTime - 100).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
                         }
                     }
