@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <RelativeLayout
+        android:id="@+id/mainBody"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#ffffff"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <Button
+                android:id="@+id/oneBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="oneBtn"
+                android:layout_weight="1"
+                />
+            <Button
+                android:id="@+id/twoBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="twoBtn"
+                android:layout_weight="1"
+                />
+            <Button
+                android:id="@+id/threeBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="threeBtn"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
+    //界面容器
+    <RelativeLayout
+        android:id="@+id/viewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </RelativeLayout>
+
+
+</FrameLayout>
