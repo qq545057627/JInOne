@@ -12,6 +12,6 @@ public interface ViewHolderDelegate<T,V> {
 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType);
 
-    public void onBindViewHolder(V holder, T t);
+    public void onBindViewHolder(V holder, T t,int position);
 
 }

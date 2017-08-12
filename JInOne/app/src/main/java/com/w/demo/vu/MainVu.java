@@ -36,6 +36,11 @@ public class MainVu extends BaseVu {
         VuManager.getInstance().pushVu(oneVu);
     }
 
+    @OnClick(R.id.newOneBtn)
+    public void newOneBtnClick(){
+
+    }
+
     @OnClick(R.id.twoBtn)
     public void twoBtnClick(){
         TwoVu twoVu=new TwoVu();

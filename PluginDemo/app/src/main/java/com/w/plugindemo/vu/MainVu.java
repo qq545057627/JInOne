@@ -4,9 +4,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.w.demo.R;
 import com.w.jinone.base.BaseVu;
 import com.w.jinone.base.VuManager;
+import com.w.plugindemo.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,5 +29,11 @@ public class MainVu extends BaseVu {
 
     }
 
+    @OnClick(R.id.oneBtn)
+    public void oneBtnClick(){
+        OneVu oneVu=new OneVu();
+        oneVu.init(context);
+        VuManager.getInstance().pushVu(oneVu);
+    }
 
 }

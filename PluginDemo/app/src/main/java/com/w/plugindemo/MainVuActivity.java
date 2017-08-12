@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import com.w.jinone.base.BasePresenterActivity;
+import com.w.jinone.base.VuManager;
+import com.w.plugindemo.vu.MainVu;
+
 public class MainVuActivity extends BasePresenterActivity<MainVu> {
 
 

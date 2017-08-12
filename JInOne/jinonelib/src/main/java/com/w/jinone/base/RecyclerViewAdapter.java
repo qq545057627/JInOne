@@ -54,7 +54,7 @@ public class RecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
 
 	@Override
 	public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-		viewHolderDelegate.onBindViewHolder(holder,mListItems.get(position));
+		viewHolderDelegate.onBindViewHolder(holder,mListItems.get(position),position);
 		if (mOnItemClickListener != null) {//如果设置了监听那么它就不为空，然后回调相应的方法
 			holder.itemView.setOnClickListener(new View.OnClickListener() {
 				@Override
