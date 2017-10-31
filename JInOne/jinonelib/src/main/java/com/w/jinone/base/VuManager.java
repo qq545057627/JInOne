@@ -13,6 +13,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.w.jinone.util.JUtil;
+
 import java.util.Stack;
 
 /**
@@ -21,6 +23,8 @@ import java.util.Stack;
  */
 
 public class VuManager {
+
+    private final String TAG="VuManager";
     //视图栈管理
     private Stack<Vu> vuStack = new Stack<Vu>();
 
@@ -75,25 +79,41 @@ public class VuManager {
     private  final long intervalTime = 2000;
     private Handler mhandler=new Handler();
     public boolean backClick() {
-        if (vuStack.size() > 0) {
-            Vu topVu=vuStack.peek();
-            if(topVu.callBackStatus()){
-                popVu();
-            }
-            return true;
-        }else{
-            if (exitFlag) {
-                ((Activity) context).finish();
-                System.exit(0);
-            } else {
-                exitFlag = true;
-                Toast.makeText(context, "再点击一次返回键，退出程序", Toast.LENGTH_LONG).show();
-                mhandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        exitFlag = false;
+        if(JUtil.filter()){
+            if (vuStack.size() > 0) {
+                Vu topVu=vuStack.peek();
+                if(topVu.callBackStatus()){
+                    popVu();
+                }else{
+                    if (exitFlag) {
+                        ((Activity) context).finish();
+                        System.exit(0);
+                    } else {
+                        exitFlag = true;
+                        Toast.makeText(context, "再点击一次返回键，退出程序", Toast.LENGTH_LONG).show();
+                        mhandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                exitFlag = false;
+                            }
+                        }, intervalTime);
                     }
-                }, intervalTime);
+                }
+                return true;
+            }else{
+                if (exitFlag) {
+                    ((Activity) context).finish();
+                    System.exit(0);
+                } else {
+                    exitFlag = true;
+                    Toast.makeText(context, "再点击一次返回键，退出程序", Toast.LENGTH_LONG).show();
+                    mhandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            exitFlag = false;
+                        }
+                    }, intervalTime);
+                }
             }
         }
         return false;
@@ -104,7 +124,7 @@ public class VuManager {
      */
     public void popVu(){
         if (!vuStack.isEmpty()) {
-            final  Vu vu = vuStack.pop();
+            final Vu vu = vuStack.pop();
             synchronized (this) {
                 if (vu == null)
                     return;
@@ -171,24 +191,27 @@ public class VuManager {
                         lastVu.getView().animate().setDuration(AnimTime).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
                     } else {
                         if(mainBody!=null){
-                            mainBody.animate().setDuration(AnimTime - 100).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
+                            mainBody.setVisibility(View.VISIBLE);
+                            mainBody.setX(sWidth);
+                            mainBody.animate().setDuration(AnimTime).translationX(0).translationY(0).setInterpolator(new LinearOutSlowInInterpolator());
                         }
                     }
-                    vu.getView().animate().setDuration(AnimTime).translationX(sWidth).
+                    vu.getView().animate().setDuration(AnimTime).translationX(-sWidth).
                             setInterpolator(new LinearOutSlowInInterpolator()).
                             setListener(listener);
                 }  else if (vu.getAnimSwitchTypeOut() == AnimSwitchEnum.LeftToRight) {  //左到右
                     if (vuStack.size() >= 1) {
                         Vu lastVu = vuStack.get(vuStack.size() - 1);
-                        lastVu.getView().setX(sWidth);
+                        lastVu.getView().setX(-sWidth);
                         lastVu.getView().animate().setDuration(AnimTime).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
                     } else {
                         if(mainBody!=null){
-                            mainBody.setX(sWidth);
-                            mainBody.animate().setDuration(AnimTime - 100).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
+                            mainBody.setVisibility(View.VISIBLE);
+                            mainBody.setX(-sWidth);
+                            mainBody.animate().setDuration(AnimTime ).translationX(0).setInterpolator(new LinearOutSlowInInterpolator());
                         }
                     }
-                    vu.getView().animate().setDuration(AnimTime).translationX(-sWidth).
+                    vu.getView().animate().setDuration(AnimTime).translationX(sWidth).
                             setInterpolator(new LinearOutSlowInInterpolator()).
                             setListener(listener);
                 }else if (vu.getAnimSwitchTypeOut() == AnimSwitchEnum.None) {
@@ -299,7 +322,7 @@ public class VuManager {
                         }
                     } else {      //如果栈内只有一个Vu,则mainBody做移动动画
                         if(mainBody!=null)
-                            mainBody.animate().setDuration(AnimTime - 100).translationX(sWidth).setInterpolator(new LinearOutSlowInInterpolator());
+                            mainBody.animate().setDuration(AnimTime ).translationX(sWidth).setInterpolator(new LinearOutSlowInInterpolator());
                     }
 
                 }else if (vu.getAnimSwitchTypeIn() == AnimSwitchEnum.RightToLift) {   //右到左
@@ -312,7 +335,7 @@ public class VuManager {
                             lastVu.getView().animate().setDuration(AnimTime).translationX(-sWidth).setInterpolator(new LinearOutSlowInInterpolator());
                     } else {
                         if(mainBody!=null)
-                        mainBody.animate().setDuration(AnimTime - 100).translationX(-sWidth).setInterpolator(new LinearOutSlowInInterpolator());
+                        mainBody.animate().setDuration(AnimTime).translationX(-sWidth).setInterpolator(new LinearOutSlowInInterpolator());
                     }
 
                 } else if (vu.getAnimSwitchTypeIn() == AnimSwitchEnum.TopToDown) {  //从上到下
@@ -320,14 +343,14 @@ public class VuManager {
                         alpha(true, containerViewContainer);
                     }
                     view.setY(-sHeight);                                             //初始化view y坐标位置
-                    view.animate().setDuration(AnimTime).translationY(0).setInterpolator(new LinearOutSlowInInterpolator()).setListener(vu.isNeedMask()==true? null:listener);
+                    view.animate().setDuration(AnimTime).translationY(0).setInterpolator(new LinearOutSlowInInterpolator()).setListener(listener);
                 }  else if (vu.getAnimSwitchTypeIn() == AnimSwitchEnum.BottomToUp) {
                     if (vu.isNeedMask()) {
                         alpha(true, containerViewContainer);
                     }
                     view.setY(sHeight);
                     view.animate().setDuration(AnimTime).setInterpolator(new AccelerateDecelerateInterpolator())
-                            .translationY(vu.getView().getMeasuredHeight()).setListener(vu.isNeedMask()==true? null:listener);
+                            .translationY(vu.getView().getMeasuredHeight()).setListener(listener);
                 }else if (vu.getAnimSwitchTypeIn() == AnimSwitchEnum.Custom) {     //自定义动画
                     View lastView=null;
                     if (vuStack.size() >= 2) {

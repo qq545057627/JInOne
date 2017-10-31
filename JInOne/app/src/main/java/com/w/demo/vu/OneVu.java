@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.qihoo360.replugin.RePlugin;
 import com.w.demo.R;
 import com.w.jinone.base.AnimSwitchEnum;
 import com.w.jinone.base.BaseVu;
@@ -29,9 +30,10 @@ public class OneVu extends BaseVu {
 
     @OnClick(R.id.show_btn)
     public void btnClick(){
-        TwoVu twoVu=new TwoVu();
+        RePlugin.startActivity(context, RePlugin.createIntent("com.w.xg", "com.w.xg.activities.MainActivity"));
+        /*TwoVu twoVu=new TwoVu();
         twoVu.init(context);
-        VuManager.getInstance().pushVu(twoVu);
+        VuManager.getInstance().pushVu(twoVu);*/
     }
 
     @OnClick(R.id.back_btn)

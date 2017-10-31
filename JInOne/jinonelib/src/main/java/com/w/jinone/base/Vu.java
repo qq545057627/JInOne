@@ -28,7 +28,7 @@ public interface Vu<T> {
     void onResume();
     void animStart();          //动画开始回调
     void animEnd();            //动画结束回调
-    void customAnim(View currentView,View lastView);     //自定义动画回调重写实现
+    void customAnim(View currentView, View lastView);     //自定义动画回调重写实现
     //设置进场切换动画
     void setAnimSwitchTypeIn(AnimSwitchEnum animType);   //设置进场动画
     AnimSwitchEnum getAnimSwitchTypeIn();

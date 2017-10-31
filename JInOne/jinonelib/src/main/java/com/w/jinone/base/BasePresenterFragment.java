@@ -1,7 +1,7 @@
 package com.w.jinone.base;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +30,7 @@ public abstract class BasePresenterFragment<V extends Vu> extends Fragment {
         View view = null;
         try {
             vu = getVuClass().newInstance();
+            preInit();
             vu.init(inflater, container);
             onBindVu();
             view = vu.getView();
@@ -68,6 +69,10 @@ public abstract class BasePresenterFragment<V extends Vu> extends Fragment {
     protected void afterResume(){}
 
     protected void onBindVu(){}
+
+    protected void preInit(){
+
+    }
 
     protected abstract Class<V> getVuClass();
 

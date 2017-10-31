@@ -3,6 +3,7 @@ package com.w.jinone.net;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -12,11 +13,13 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.w.jinone.base.CallBackObject;
 
 import org.json.JSONObject;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +34,12 @@ public class NetManager<T> {
 
     private RequestQueue mQueue = null;
 
+    private boolean isDebug=false;
+
+
     private final int DEFAULT_MAX_RETRIES=3;
+
+    private HashMap<String, String> headers = new HashMap<String, String>();
 
     public static void init(Context context){
         getInstance(context);
@@ -51,7 +59,26 @@ public class NetManager<T> {
         mQueue = Volley.newRequestQueue(context);
     }
 
+    public boolean isDebug() {
+        return isDebug;
+    }
+
+    public void setDebug(boolean debug) {
+        isDebug = debug;
+    }
+
+    public void addHeaderValue(String key,String value){
+        headers.put(key,value);
+    }
+
+    public void clearHeader(){
+        headers.clear();
+    }
+
     public void postRequest(Request<?> request){
+        request.setRetryPolicy(new DefaultRetryPolicy(10000,
+                DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(request);
 
     }
@@ -66,12 +93,16 @@ public class NetManager<T> {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.e("TAG", "response -> "+url+"  ->"+ response.toString());
+                        if(isDebug){
+                            Log.e("TAG", "response -> "+url+"  ->"+ response.toString());
+                        }
                         if(callBack!=null&&response!=null){
                             Gson gson = new Gson();
                             try {
-                                Class < T >  entityClass  =  (Class < T > ) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[ 0 ];
-                                callBack.CallBackData(gson.fromJson(response.toString(),entityClass));
+                                Type[] types=callBack.getClass().getGenericInterfaces();
+                                ParameterizedType paraType=(ParameterizedType)types[0];
+                                T data=gson.fromJson(response.toString(),paraType.getActualTypeArguments()[0]);
+                                callBack.CallBackData(data);
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -81,15 +112,15 @@ public class NetManager<T> {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Log.e("TAG", ""+error.networkResponse.statusCode+new String(error.networkResponse.data));
-                if(callBack!=null&&error.networkResponse!=null){
-                    Gson gson = new Gson();
-                    try {
-                        Class < T >  entityClass  =  (Class < T > ) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[ 0 ];
-                        callBack.CallBackData(gson.fromJson(new String(error.networkResponse.data),entityClass));
-                    }catch (Exception e){
-                        e.printStackTrace();
+
+                if(callBack!=null){
+                    if(error.networkResponse!=null){
+                        Log.e("TAG", ""+error.networkResponse.statusCode+new String(error.networkResponse.data));
+                        callBack.CallBackData(null);
+                    }else{
+                        callBack.CallBackData(null);
                     }
+
                 }
             }
         })
@@ -108,7 +139,7 @@ public class NetManager<T> {
 
             @Override
             public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
+                //HashMap<String, String> headers = new HashMap<String, String>();
                 //headers.put("Accept", "application/json");
                 //headers.put("Content-Type", "application/json; charset=UTF-8");
 
@@ -116,6 +147,9 @@ public class NetManager<T> {
                 return headers;
             }
         };
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(3000,
+                DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonRequest);
     }
 
@@ -125,17 +159,19 @@ public class NetManager<T> {
     }
 
 
-    public void postRequest(String url, final HashMap<String,String> params , final CallBackObject callBack){
+    public void postRequest(String url, final HashMap<String,String> params , final CallBackObject<T> callBack){
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,url,
                 new Response.Listener() {
                     @Override
                     public void onResponse(Object response) {
-                        //Log.e("TAG", "response -> " + response);
+                        Log.e("TAG", "response -> " + response);
                         if(callBack!=null&&response!=null){
-                            Gson gson = new Gson();
+                            Gson gson = new GsonBuilder().serializeNulls().create();
                             try {
-                                Class < T >  entityClass  =  (Class < T > ) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[ 0 ];
+                                Type[] types=callBack.getClass().getGenericInterfaces();
+                                ParameterizedType paraType=(ParameterizedType)types[0];
+                                Class <T>  entityClass  =  (Class ) paraType.getActualTypeArguments()[0];
                                 callBack.CallBackData(gson.fromJson(response.toString(),entityClass));
                             }catch (Exception e){
                                 e.printStackTrace();
@@ -146,7 +182,17 @@ public class NetManager<T> {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", error.getMessage(), error);
+                if(callBack!=null&&error.networkResponse!=null){
+                    Gson gson = new GsonBuilder().serializeNulls().create();
+                    try {
+                        Type[] types=callBack.getClass().getGenericInterfaces();
+                        ParameterizedType paraType=(ParameterizedType)types[0];
+                        Class < T >  entityClass  =  (Class < T > ) paraType.getActualTypeArguments()[0];
+                        callBack.CallBackData(gson.fromJson(new String(error.networkResponse.data),entityClass));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
             }
         }) {
             @Override
@@ -158,6 +204,9 @@ public class NetManager<T> {
                 return params;
             }
         };
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(10000,
+                DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(stringRequest);
     }
 

@@ -3,7 +3,9 @@ package com.w.jinone.base;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class JsonData{
+import java.io.Serializable;
+
+public class JsonData  implements Serializable {
 
     public JsonData(){}
 
@@ -23,7 +25,7 @@ public class JsonData{
 
     @Override
     public String toString() {
-        Gson gson=new GsonBuilder().create();
+        Gson gson=new GsonBuilder().serializeNulls().create();
         String json = gson.toJson(this);
         return json;
     }

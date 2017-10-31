@@ -1,43 +1,17 @@
 package com.w.jinone.base;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import java.lang.reflect.Type;
 
-public class BaseDataDto<T> extends JsonData{
+public class BaseDataDto<T> extends JsonData {
 
     private int error;
     private String msg;
     private JsonElement data;
-    private int offset;
-    private int show;   //是否显示状态   1显示   0显示
-    private int has_more;//为0没有下一页
-
-    public int getHasmore() {
-        return has_more;
-    }
-
-    public void setHasmore(int hasmore) {
-        this.has_more = hasmore;
-    }
-
-    public int getShow() {
-        return show;
-    }
-
-    public void setShow(int show) {
-        this.show = show;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
+    private boolean isShow=false;
     public int getError() {
         return error;
     }
@@ -62,12 +36,20 @@ public class BaseDataDto<T> extends JsonData{
         this.data = data;
     }
 
+    public boolean isShow() {
+        return isShow;
+    }
+
+    public void setShow(boolean show) {
+        isShow = show;
+    }
+
     public T getDataBean(Class<T> cls){
         if(cls==getClass()){
             return (T) this;
         }
         if(data!=null){
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().serializeNulls().create();
             try {
                 return gson.fromJson(data, cls);
             }catch (Exception e){
@@ -79,7 +61,7 @@ public class BaseDataDto<T> extends JsonData{
 
     public T getDataBean(Type type){
         if(data!=null){
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder().serializeNulls().create();
             try {
                 return gson.fromJson(data, type);
             }catch (Exception e){

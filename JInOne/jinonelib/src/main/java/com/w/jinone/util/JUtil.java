@@ -1,9 +1,12 @@
 package com.w.jinone.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -18,6 +21,54 @@ import java.util.Date;
  */
 
 public class JUtil {
+
+
+    public static final long INTERVAL = 500L; //防止连续点击的时间间隔
+    private static long lastClickTime = 0L; //上一次点击的时间
+    public static boolean filter() {
+        return filter(INTERVAL);
+    }
+
+    public static boolean filter(long interval) {
+        if (System.currentTimeMillis() - lastClickTime > interval) {
+            lastClickTime = System.currentTimeMillis();
+            return true;
+        } else {
+            //lastClickTime = System.currentTimeMillis();
+            return false;
+        }
+    }
+
+    /**
+     * 隐藏键盘
+     * @param context
+     */
+    public static void hideSoftInput(Context context){
+        Activity a=(Activity)context;
+        InputMethodManager inputMethodManager = (InputMethodManager)  a.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if(a.getCurrentFocus()!=null)
+            inputMethodManager.hideSoftInputFromWindow(a.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public static void hideSoftInput(View view){
+        InputMethodManager inputMethodManager = (InputMethodManager)view.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if(inputMethodManager.isActive())
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    //弹出键盘
+    public static void showSoftInput(Context context,View view){
+        if(context==null)
+            return;
+        if(context instanceof Activity){
+            Activity a=(Activity)context;
+            InputMethodManager inputMethodManager = (InputMethodManager)  a.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            if (a.getCurrentFocus()!=null){
+                inputMethodManager.showSoftInput(view,0);
+            }
+        }
+    }
+
 
     public static <T> T fromJson(String json, Class<T> classOfT){
         if(json!=null){

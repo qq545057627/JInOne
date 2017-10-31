@@ -10,17 +10,17 @@ import android.view.ViewGroup;
 /**
  * Created by yutao on 2016/3/4 0004.
  */
-public class BaseVu<T> implements Vu<T> ,View.OnTouchListener {
+public class BaseVu<T> implements Vu<T>,View.OnTouchListener {
 
     protected Context context;
     protected View view;
-    protected AnimSwitchEnum animTypeIn=AnimSwitchEnum.RightToLift;
-    protected AnimSwitchEnum animTypeOut=AnimSwitchEnum.LeftToRight;
+    protected AnimSwitchEnum animTypeIn= AnimSwitchEnum.RightToLift;
+    protected AnimSwitchEnum animTypeOut= AnimSwitchEnum.LeftToRight;
     protected int depth=0;
     protected int delayInitTime=300;
     protected boolean isNeedMask=true;       //dialog形式的时候默认显示mask
     protected String TAG=getClass().getSimpleName();
-    protected boolean isSaveVu=true;    //切换的时候是否保存上一个Vu，默认缓存上一个Vu
+    protected boolean isCache =true;    //切换的时候是否保存上一个Vu，默认缓存上一个Vu
 
     public BaseVu(){
     }
@@ -148,7 +148,7 @@ public class BaseVu<T> implements Vu<T> ,View.OnTouchListener {
 
 
     public boolean isCache() {
-        return isSaveVu;
+        return isCache;
     }
 
     @Override
@@ -156,8 +156,8 @@ public class BaseVu<T> implements Vu<T> ,View.OnTouchListener {
         return false;
     }
 
-    public void setSaveVu(boolean saveVu) {
-        isSaveVu = saveVu;
+    public void setCache(boolean cache) {
+        isCache = cache;
     }
 
     @Override
