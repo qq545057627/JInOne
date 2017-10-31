@@ -32,10 +32,10 @@ public class TwoVu extends BaseVu {
     public void btnClick(){
         ClassLoader d1ClassLoader = RePlugin.fetchClassLoader("demo3");//获取插件的ClassLoader
         try {
-            Log.e(TAG, "btnClick: 11=="+d1ClassLoader);
-            Class cls = d1ClassLoader.loadClass("com.w.xg.vu.LoginVu").getClass();
-            Log.e(TAG, "btnClick: "+cls );
-            Vu vu = d1ClassLoader.loadClass("com.w.xg.vu.LoginVu").asSubclass(Vu.class).newInstance();//使用插件的Classloader获取指定Fragment实例
+
+            Class cls = d1ClassLoader.loadClass("com.w.xg.vu.LoginVu");
+            Log.e(TAG, "btnClick: "+cls.getGenericSuperclass() );
+            BaseVu vu = (BaseVu) d1ClassLoader.loadClass("com.w.xg.vu.LoginVu").newInstance();//使用插件的Classloader获取指定Fragment实例
             vu.init(context);
             VuManager.getInstance().pushVu(vu);
         } catch (Exception e) {

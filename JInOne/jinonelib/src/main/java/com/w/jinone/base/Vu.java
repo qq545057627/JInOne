@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.Serializable;
+
 
 /**
  * 
@@ -13,7 +15,7 @@ import android.view.ViewGroup;
 * @date 2015年6月25日 下午3:09:39 
 * @version V1.0
  */
-public interface Vu<T> {
+public interface Vu<T> extends Serializable {
     void init(LayoutInflater inflater, ViewGroup container);
     void init(Context context);
     void delayInitData();      //初始化数据

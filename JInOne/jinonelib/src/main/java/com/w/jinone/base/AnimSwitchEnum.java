@@ -1,9 +1,11 @@
 package com.w.jinone.base;
 
+import java.io.Serializable;
+
 /**
  * Created by yutao on 2016/6/13 0013.
  */
-public enum AnimSwitchEnum {
+public enum AnimSwitchEnum implements Serializable {
 
 
     None(0),           //无动画

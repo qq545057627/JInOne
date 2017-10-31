@@ -19,6 +19,14 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+    maven { url 'https://jitpack.io' }
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 apply plugin: 'replugin-host-gradle'
 repluginHostConfig {
     useAppCompat = true
@@ -37,6 +45,7 @@ dependencies {
     compile 'com.qihoo360.replugin:replugin-host-lib:2.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'org.greenrobot:eventbus:3.0.0'
+    //compile 'com.github.qq545057627:JInOne:1.0.3'
     testCompile 'junit:junit:4.12'
     compile project(path: ':jinonelib')
 }
